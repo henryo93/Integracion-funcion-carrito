@@ -1,0 +1,20 @@
+create database ecomerse;
+use ecomerse;
+
+CREATE TABLE `producto` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `nombreProducto` VARCHAR(255) DEFAULT NULL,
+    `precioProducto` DOUBLE DEFAULT NULL,
+    `isvProducto` DOUBLE DEFAULT NULL,
+    `imgProducto` VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `carrito` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+     `idProducto` INT NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (idProducto) REFERENCES producto(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
