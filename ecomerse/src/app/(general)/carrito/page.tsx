@@ -19,8 +19,8 @@ export default function page() {
             {
               productosCarrito.map((item) => (
                  <div className='col-md-3'>
-                  <Producto producto={item} key={item.id}></Producto>
-                  <BtnEliminar producto={item}></BtnEliminar>
+                  <Producto producto={item.producto} key={item.id}></Producto>
+                  <BtnEliminar producto={item.producto}></BtnEliminar>
               </div>
               
               ))

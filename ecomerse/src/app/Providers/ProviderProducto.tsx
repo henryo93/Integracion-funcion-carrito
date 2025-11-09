@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { PlantillaReact } from '../Modelos/PlantillaReact'
 import { Producto } from '../Modelos/Producto'
 import {contexCarrito} from '../Contexto/ContexCarrito'
-
+import { CarritoItem } from '../Modelos/CarritoItem';
 
 //1. children
 //2. definir la funcionalid de los metodos 
@@ -12,8 +12,9 @@ export default function ProviderProducto({ children }: PlantillaReact) {
 
 
     let urlApi="http://localhost:5000/producto"
+    let urlApiCarrito = "http://localhost:5000/carrito"
     const [producto, setProducto] = useState<Producto[]>([]);
-    const [productosCarrito, setProductosCarrito]= useState<Producto[]>([]);
+    const [productosCarrito, setProductosCarrito]= useState<CarritoItem[]>([]);
 
 
     //fetch, axios, ajax 
@@ -108,10 +109,58 @@ export default function ProviderProducto({ children }: PlantillaReact) {
         
     }
 
+    async function cargarCarrito() {
+        try {
+            const resp = await fetch(urlApiCarrito);
+            const data = await resp.json();
+            setProductosCarrito(data);
+        } catch (error) {
+            console.log('Error al cargar el carrito:', error);
+        }
+    }
+
+    async function agregarCarrito(producto: Producto) {
+        try {
+            const response = await fetch(urlApiCarrito, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ idProducto: producto.id })
+            });
+          
+            if (response.ok) {
+                alert('Producto agregado al carrito');
+                cargarCarrito(); // Refresh cart items
+            } else {
+                alert('Producto ya está en el carrito');
+            }
+        } catch (error) {
+            alert('Error al agregar al carrito: ' + error);
+        }
+    }
+
+    async function eliminarDelCarrito(idCarrito: number) {
+        try {
+            const response = await fetch(`${urlApiCarrito}/${idCarrito}`, {
+                method: 'DELETE',
+            });
+            
+            if (response.ok) {
+                alert('Producto eliminado del carrito');
+                cargarCarrito(); // Refresh cart items
+            } else {
+                alert('Error al eliminar del carrito');
+            }
+        } catch (error) {
+            alert('Error al eliminar del carrito: ' + error);
+        }
+    }
+
 
     useEffect(() => {
         cargarProducto();
-
+        cargarCarrito();            
     }, []);
 
 
@@ -119,14 +168,20 @@ export default function ProviderProducto({ children }: PlantillaReact) {
         console.log(producto)
     },[producto])
 
-    function agregarCarrito(producto:Producto){
-        alert('Producto agregado al carrito');
-        setProductosCarrito([...productosCarrito,producto]);
-    }
+  
 
 
     return (
-        <contexCarrito.Provider value={{producto,productosCarrito,agregarCarrito,guardarProducto,eliminarProdoucto,actualizarProducto}}>
+        <contexCarrito.Provider value={{
+            producto,
+            productosCarrito,
+            agregarCarrito,
+            eliminarDelCarrito,
+            cargarCarrito,
+            guardarProducto,
+            eliminarProdoucto,
+            actualizarProducto
+        }}>
             {children}
         </contexCarrito.Provider>
     )

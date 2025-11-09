@@ -117,7 +117,7 @@ app.get('/carrito', async (req, resp) => {
             include: [{
                 model: Producto,
                 required: true,
-                attributes: ['id', 'nombreProducto', 'precioProducto', 'imgProducto'] // Selecciona los atributos que deseas
+                attributes: ['id', 'nombreProducto','isvProducto', 'precioProducto', 'imgProducto'] 
             }]
         });
         if (listaCarrito.length > 0)

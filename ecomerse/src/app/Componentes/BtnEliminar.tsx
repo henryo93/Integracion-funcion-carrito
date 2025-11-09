@@ -1,10 +1,11 @@
 import React from 'react'
 import { ProductoProp } from '../Modelos/ProductoProp'
+import { useContextCarrito } from '../Providers/ProviderProducto'
 
 export default function BtnEliminar({producto}:ProductoProp) {
-
+  const { eliminarDelCarrito } = useContextCarrito();
  function eliminarProducto(){
-    alert('producto eliminado')
+    eliminarDelCarrito(producto.id);
  }
 
 
